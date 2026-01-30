@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button";
 import { LinkTag } from "@/components/ui/link-tag";
 import {
   Cancel01Icon,
-  ArrowRight02Icon,
   Calendar01Icon,
   InformationCircleIcon,
   ArrowUpRight01Icon,
@@ -115,7 +114,7 @@ function DetailItem({
   showInfoIcon?: boolean;
 }) {
   return (
-    <div className="flex w-[160px] flex-col gap-1">
+    <div className="flex flex-col gap-1">
       <div className="flex items-center gap-1">
         <span className="text-label-xs text-text-sub">{label}</span>
         {showInfoIcon && (
@@ -193,6 +192,25 @@ function FilterTab({
       <span className="size-4">{icon}</span>
       <span>{label}</span>
     </button>
+  );
+}
+
+// Compact stat card for sticky header
+function CompactStatCard({
+  title,
+  value,
+  icon,
+}: {
+  title: string;
+  value: string;
+  icon: React.ReactNode;
+}) {
+  return (
+    <div className="flex flex-1 items-center gap-1 rounded-[var(--radius-2)] border border-stroke-soft bg-bg-white px-3.5 py-2.5">
+      <span className="text-label-sm text-text-sub">{title}</span>
+      <span className="flex-1 text-label-sm text-text-strong">{value}</span>
+      <div className="shrink-0">{icon}</div>
+    </div>
   );
 }
 
@@ -297,35 +315,85 @@ export function CustomerDrawer({
   const [activeTab, setActiveTab] = useState<"meeting" | "email" | "support">(
     "meeting"
   );
+  const [isClosing, setIsClosing] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const drawerRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const prevCustomerIdRef = useRef<string | null>(null);
+
+  // Track if this is a customer switch (not initial open)
+  const isCustomerSwitch = prevCustomerIdRef.current !== null &&
+    prevCustomerIdRef.current !== customer?.id &&
+    isOpen;
+
+  // Update previous customer ID
+  useEffect(() => {
+    if (customer?.id) {
+      prevCustomerIdRef.current = customer.id;
+    }
+    if (!isOpen) {
+      prevCustomerIdRef.current = null;
+    }
+  }, [customer?.id, isOpen]);
+
+  // Reset closing state when drawer closes
+  useEffect(() => {
+    if (!isOpen) {
+      setIsClosing(false);
+      setIsScrolled(false);
+    }
+  }, [isOpen]);
+
+  // Handle scroll for sticky compact stats
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const scrollTop = e.currentTarget.scrollTop;
+    setIsScrolled(scrollTop > 10);
+  };
+
+  // Handle close with animation
+  const handleClose = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      onClose();
+    }, 250);
+  };
 
   // Handle escape key
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && isOpen) {
-        onClose();
+      if (event.key === "Escape" && isOpen && !isClosing) {
+        handleClose();
       }
     };
 
     document.addEventListener("keydown", handleEscape);
     return () => document.removeEventListener("keydown", handleEscape);
-  }, [isOpen, onClose]);
+  }, [isOpen, isClosing]);
 
-  // Handle click outside
+  // Handle click outside - but NOT on the global header
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+
+      // Don't close if clicking on the header or its children
+      const header = document.querySelector("header");
+      if (header?.contains(target)) {
+        return;
+      }
+
       if (
         drawerRef.current &&
-        !drawerRef.current.contains(event.target as Node) &&
-        isOpen
+        !drawerRef.current.contains(target) &&
+        isOpen &&
+        !isClosing
       ) {
-        onClose();
+        handleClose();
       }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isOpen, onClose]);
+  }, [isOpen, isClosing]);
 
   if (!customer || !isOpen) return null;
 
@@ -343,29 +411,27 @@ export function CustomerDrawer({
     <div
         ref={drawerRef}
         className={cn(
-          "fixed top-14 right-0 bottom-0 z-50 flex",
+          "fixed top-[53px] right-0 bottom-0 z-50 flex",
           "border-l border-stroke-soft bg-bg-white shadow-lg",
-          "animate-slide-in-right",
-          "w-[70vw]"
+          "w-[85vw]",
+          isClosing
+            ? "animate-slide-out-right"
+            : isCustomerSwitch
+              ? ""
+              : "animate-slide-in-right"
         )}
       >
       {/* Left Panel - Customer Profile */}
       <div className="flex w-[390px] shrink-0 flex-col border-r border-stroke-soft">
-        {/* Breadcrumb Header */}
-        <div className="flex items-center gap-2 border-b border-stroke-soft px-6 py-4">
-          <div className="flex items-center gap-1">
-            <ArrowRight02Icon size={20} className="text-text-strong" />
-            <ArrowRight02Icon size={20} className="text-text-strong -ml-2.5" />
-          </div>
-          <div className="flex items-center gap-1.5">
-            <span className="text-label-sm text-text-sub">Customers</span>
-          </div>
+        {/* Compact Header with Close */}
+        <div className="flex items-center gap-2 border-b border-stroke-soft px-4 py-2.5">
           <button
-            onClick={onClose}
-            className="ml-auto rounded-[var(--radius-2)] p-1.5 hover:bg-bg-weak transition-all duration-150 active:scale-95"
+            onClick={handleClose}
+            className="rounded-[var(--radius-2)] p-1.5 hover:bg-bg-weak transition-all duration-150 active:scale-95"
           >
             <Cancel01Icon size={20} className="text-icon-sub transition-colors duration-150 hover:text-icon-strong" />
           </button>
+          <span className="text-label-sm text-text-sub">Customers</span>
         </div>
 
         {/* Customer Profile Section */}
@@ -409,8 +475,8 @@ export function CustomerDrawer({
         </div>
 
         {/* Customer Details Grid */}
-        <div className="flex flex-1 flex-col overflow-y-auto">
-          <div className="flex flex-wrap content-start gap-5 p-6">
+        <div className="flex flex-1 flex-col overflow-y-auto scrollbar-hover">
+          <div className="grid grid-cols-2 gap-5 p-6">
             <DetailItem
               label="Current ARR"
               value={formatCurrency(customer.arr)}
@@ -500,46 +566,73 @@ export function CustomerDrawer({
       </div>
 
       {/* Right Panel - Activity */}
-      <div className="flex flex-1 flex-col bg-bg-white">
-        {/* Stats Row */}
-        <div className="flex gap-5 border-b border-stroke-soft p-4">
-          {mockActivityStats.map((stat, index) => (
-            <div
-              key={index}
-              className="flex-1 animate-fade-in"
-              style={{ animationDelay: `${index * 75}ms`, animationFillMode: 'both' }}
-            >
-              <ActivityStatCard {...stat} />
-            </div>
-          ))}
-        </div>
-
-        {/* Tab Filters & Timeline */}
-        <div className="flex flex-1 flex-col gap-3 overflow-hidden p-6">
-          {/* Tab Filters */}
-          <div className="flex gap-2 pb-4">
-            <FilterTab
-              icon={<FathomLogo size={16} />}
-              label="Meeting"
-              isActive={activeTab === "meeting"}
-              onClick={() => setActiveTab("meeting")}
-            />
-            <FilterTab
-              icon={<HubSpotLogo size={16} />}
-              label="Email Threads"
-              isActive={activeTab === "email"}
-              onClick={() => setActiveTab("email")}
-            />
-            <FilterTab
-              icon={<ZendeskLogo size={16} />}
-              label="Support Tickets"
-              isActive={activeTab === "support"}
-              onClick={() => setActiveTab("support")}
-            />
+      <div className="flex flex-1 flex-col bg-bg-white overflow-hidden">
+        {/* Scrollable Content */}
+        <div
+          ref={scrollContainerRef}
+          onScroll={handleScroll}
+          className="flex-1 overflow-y-auto scrollbar-hover"
+        >
+          {/* Sticky Compact Stats Header - visible when scrolled */}
+          <div
+            className={cn(
+              "sticky top-0 z-10 flex gap-3 border-b border-stroke-soft bg-bg-white px-6 transition-all duration-200",
+              isScrolled ? "opacity-100 py-4" : "opacity-0 h-0 py-0 overflow-hidden"
+            )}
+          >
+            {mockActivityStats.map((stat, index) => (
+              <CompactStatCard
+                key={index}
+                title={stat.title}
+                value={stat.value}
+                icon={stat.icon}
+              />
+            ))}
           </div>
 
-          {/* Timeline Feed */}
-          <div className="flex-1 overflow-y-auto">
+          {/* Full Stats Row - hidden when scrolled */}
+          <div
+            className={cn(
+              "flex gap-5 border-b border-stroke-soft p-4 transition-all duration-200",
+              isScrolled ? "opacity-0 h-0 p-0 overflow-hidden" : "opacity-100"
+            )}
+          >
+            {mockActivityStats.map((stat, index) => (
+              <div
+                key={index}
+                className="flex-1 animate-fade-in"
+                style={{ animationDelay: `${index * 75}ms`, animationFillMode: 'both' }}
+              >
+                <ActivityStatCard {...stat} />
+              </div>
+            ))}
+          </div>
+
+          {/* Tab Filters & Timeline */}
+          <div className="flex flex-col gap-3 p-6 pt-3">
+            {/* Tab Filters - Sticky */}
+            <div className="sticky top-0 z-[5] flex gap-2 bg-bg-white pb-4 pt-3">
+              <FilterTab
+                icon={<FathomLogo size={16} />}
+                label="Meeting"
+                isActive={activeTab === "meeting"}
+                onClick={() => setActiveTab("meeting")}
+              />
+              <FilterTab
+                icon={<HubSpotLogo size={16} />}
+                label="Email Threads"
+                isActive={activeTab === "email"}
+                onClick={() => setActiveTab("email")}
+              />
+              <FilterTab
+                icon={<ZendeskLogo size={16} />}
+                label="Support Tickets"
+                isActive={activeTab === "support"}
+                onClick={() => setActiveTab("support")}
+              />
+            </div>
+
+            {/* Timeline Feed */}
             <div className="flex flex-col gap-3.5">
               {mockTimelineEntries.map((entry, index) => (
                 <div
