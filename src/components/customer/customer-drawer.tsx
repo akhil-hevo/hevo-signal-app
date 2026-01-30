@@ -14,6 +14,8 @@ import {
   InformationCircleIcon,
   ArrowUpRight01Icon,
   Alert02Icon,
+  ArrowLeft01Icon,
+  PlayCircle02Icon,
 } from "hugeicons-react";
 
 interface CustomerDrawerProps {
@@ -30,14 +32,25 @@ interface ActivityStat {
   icon: React.ReactNode;
 }
 
+interface Participant {
+  name: string;
+  email: string;
+  avatar?: string;
+}
+
 interface TimelineEntry {
   id: string;
   date: string;
   time: string;
+  duration?: string;
   title: string;
   summary: string;
   concerns?: string[];
-  tags?: Array<{ label: string; variant: "warning" | "danger" | "success" }>;
+  tags?: Array<{ label: string; variant: "warning" | "danger" | "success" | "neutral" }>;
+  customerParticipants?: Participant[];
+  hevoParticipants?: Participant[];
+  topics?: string[];
+  recordingUrl?: string;
 }
 
 // Mock data for activities (would come from API in real app)
@@ -70,6 +83,7 @@ const mockTimelineEntries: TimelineEntry[] = [
     id: "1",
     date: "May 21, 2025",
     time: "01:00 PM",
+    duration: "45 minutes",
     title: "Fathom summary for Hevo X PW",
     summary:
       "A general meeting between Hevo and Physics Wallah Private Limited discussing PW.live's data platform migration from Hevo Data to an in-house lake house architecture. Key topics included migration progress, current and future usage, and negotiation of a new flexible month-to-month pricing plan.",
@@ -83,11 +97,26 @@ const mockTimelineEntries: TimelineEntry[] = [
       { label: "Renewal Risk", variant: "warning" },
       { label: "Business Impact", variant: "warning" },
     ],
+    customerParticipants: [
+      { name: "Prateek Jain", email: "prateek.jain@pw.live" },
+      { name: "Rohit Sharma", email: "rohit.sharma@pw.live" },
+    ],
+    hevoParticipants: [
+      { name: "Felix Joy", email: "felix.joy@hevodata.com" },
+      { name: "Meghna Singh", email: "meghna.singh@hevodata.com" },
+    ],
+    topics: [
+      "PW.live is migrating their data platform from Hevo Data to an in-house lake house architecture built on S3 and Trino.",
+      "They discussed current usage patterns and the timeline for completing the migration over the next 2-3 months.",
+      "Hevo proposed flexible month-to-month pricing plans for 1 billion and 1.5 billion events to accommodate their transition period.",
+    ],
+    recordingUrl: "#",
   },
   {
     id: "2",
     date: "Mar 18, 2025",
     time: "9:30 AM",
+    duration: "60 minutes",
     title: "Hevo x Physicswalla | Quarterly Strategy Meet",
     summary:
       "The quarterly strategy meeting focused on reviewing Physics Wallah's evolving data infrastructure plans, including their move towards an in-house lake house solution and migration from Redshift to S3/Trino.",
@@ -99,6 +128,19 @@ const mockTimelineEntries: TimelineEntry[] = [
       { label: "Pricing Concern", variant: "warning" },
       { label: "Product Issues", variant: "warning" },
     ],
+    customerParticipants: [
+      { name: "Prateek Jain", email: "prateek.jain@pw.live" },
+      { name: "Amit Kumar", email: "amit.kumar@pw.live" },
+    ],
+    hevoParticipants: [
+      { name: "Felix Joy", email: "felix.joy@hevodata.com" },
+    ],
+    topics: [
+      "Reviewed Q1 performance metrics and data pipeline health.",
+      "Discussed roadmap for migrating from Redshift to S3/Trino architecture.",
+      "Identified resource bottlenecks during high-traffic sales periods.",
+    ],
+    recordingUrl: "#",
   },
 ];
 
@@ -214,7 +256,157 @@ function CompactStatCard({
   );
 }
 
-function TimelineCard({ entry, isLast = false }: { entry: TimelineEntry; isLast?: boolean }) {
+// Meeting Details View Component
+function MeetingDetailsView({
+  entry,
+  onBack,
+}: {
+  entry: TimelineEntry;
+  onBack: () => void;
+}) {
+  return (
+    <div className="flex flex-1 flex-col overflow-hidden">
+      {/* Header with breadcrumb */}
+      <div className="flex items-center justify-between border-b border-stroke-soft px-6 py-4">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={onBack}
+            className="flex items-center gap-1.5 rounded-[var(--radius-2)] px-2 py-1 text-label-sm text-text-sub hover:bg-bg-weak transition-all duration-150"
+          >
+            <ArrowLeft01Icon size={16} />
+            <span>Meetings</span>
+          </button>
+        </div>
+        {entry.recordingUrl && (
+          <Button
+            variant="primary"
+            styleType="stroke"
+            size="sm"
+            leftIcon={<PlayCircle02Icon size={16} />}
+          >
+            Recording
+          </Button>
+        )}
+      </div>
+
+      {/* Scrollable Content */}
+      <div className="flex-1 overflow-y-auto scrollbar-hover">
+        <div className="flex flex-col gap-6 p-6">
+          {/* Title and Meta */}
+          <div className="flex flex-col gap-1">
+            <h3 className="text-title-h5 text-text-strong">{entry.title}</h3>
+            <p className="text-paragraph-sm text-text-sub">
+              {entry.date}, {entry.time} • {entry.duration || "N/A"}
+            </p>
+          </div>
+
+          {/* Participants */}
+          <div className="flex flex-col gap-4">
+            {/* Customer Participants */}
+            {entry.customerParticipants && entry.customerParticipants.length > 0 && (
+              <div className="flex flex-col gap-3">
+                <p className="text-label-xs text-text-sub uppercase tracking-wider">Customer Participants</p>
+                <div className="flex flex-col gap-2">
+                  {entry.customerParticipants.map((participant, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                      <Avatar fallback={participant.name} size="sm" />
+                      <div className="flex flex-col">
+                        <span className="text-label-sm text-text-strong">{participant.name}</span>
+                        <span className="text-paragraph-xs text-text-sub">{participant.email}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Hevo Participants */}
+            {entry.hevoParticipants && entry.hevoParticipants.length > 0 && (
+              <div className="flex flex-col gap-3">
+                <p className="text-label-xs text-text-sub uppercase tracking-wider">Hevo Participants</p>
+                <div className="flex flex-col gap-2">
+                  {entry.hevoParticipants.map((participant, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                      <Avatar fallback={participant.name} size="sm" />
+                      <div className="flex flex-col">
+                        <span className="text-label-sm text-text-strong">{participant.name}</span>
+                        <span className="text-paragraph-xs text-text-sub">{participant.email}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Divider */}
+          <div className="h-px bg-stroke-soft" />
+
+          {/* Meeting Context */}
+          <div className="flex flex-col gap-3">
+            <p className="text-label-xs text-text-sub uppercase tracking-wider">Meeting Context</p>
+            <p className="text-paragraph-sm text-text-sub">{entry.summary}</p>
+          </div>
+
+          {/* Tags */}
+          {entry.tags && entry.tags.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {entry.tags.map((tag, index) => (
+                <span
+                  key={index}
+                  className={cn(
+                    "inline-flex items-center gap-1 rounded-[var(--radius-1-5)]",
+                    "py-[var(--spacing-0-5)] px-[var(--spacing-2)]",
+                    "text-xs",
+                    tag.variant === "warning" && "bg-warning-lighter text-warning",
+                    tag.variant === "danger" && "bg-danger-lighter text-danger",
+                    tag.variant === "success" && "bg-success-lighter text-success",
+                    tag.variant === "neutral" && "bg-bg-weak text-text-sub"
+                  )}
+                >
+                  <Alert02Icon size={12} />
+                  {tag.label}
+                </span>
+              ))}
+            </div>
+          )}
+
+          {/* Topics */}
+          {entry.topics && entry.topics.length > 0 && (
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center gap-2">
+                <svg className="size-4 text-text-sub" viewBox="0 0 16 16" fill="none">
+                  <rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" strokeWidth="1.5"/>
+                  <path d="M5 5h6M5 8h6M5 11h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                </svg>
+                <p className="text-label-sm text-text-strong">Topics</p>
+              </div>
+              <ul className="list-disc space-y-2 pl-5 text-paragraph-sm text-text-sub">
+                {entry.topics.map((topic, index) => (
+                  <li key={index}>{topic}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Key Concerns */}
+          {entry.concerns && entry.concerns.length > 0 && (
+            <div className="flex flex-col gap-3">
+              <p className="text-label-sm text-text-strong">Key Concerns Raised</p>
+              <ul className="list-disc space-y-2 pl-5 text-paragraph-sm text-text-sub">
+                {entry.concerns.map((concern, index) => (
+                  <li key={index}>{concern}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TimelineCard({ entry, isLast = false, onViewDetails }: { entry: TimelineEntry; isLast?: boolean; onViewDetails?: () => void }) {
   return (
     <div className="relative flex gap-3">
       {/* Left: Timeline with date/time */}
@@ -240,7 +432,7 @@ function TimelineCard({ entry, isLast = false }: { entry: TimelineEntry; isLast?
       {/* Vertical timeline line - positioned absolutely to span full height plus gap */}
       {!isLast && (
         <div
-          className="absolute left-[13.5px] top-7 w-px bg-stroke-soft"
+          className="absolute left-[13.5px] top-7 z-0 w-px bg-stroke-soft"
           style={{ height: 'calc(100% + 14px)' }}
         />
       )}
@@ -255,6 +447,7 @@ function TimelineCard({ entry, isLast = false }: { entry: TimelineEntry; isLast?
             styleType="stroke"
             size="sm"
             rightIcon={<ArrowUpRight01Icon size={16} />}
+            onClick={onViewDetails}
           >
             View Details
           </Button>
@@ -288,12 +481,9 @@ function TimelineCard({ entry, isLast = false }: { entry: TimelineEntry; isLast?
                   "inline-flex items-center gap-1 rounded-[var(--radius-1-5)]",
                   "py-[var(--spacing-0-5)] px-[var(--spacing-2)]",
                   "text-xs",
-                  tag.variant === "warning" &&
-                    "border border-warning-light bg-warning-lighter text-warning",
-                  tag.variant === "danger" &&
-                    "border border-danger-light bg-danger-lighter text-danger",
-                  tag.variant === "success" &&
-                    "border border-success-light bg-success-lighter text-success"
+                  tag.variant === "warning" && "bg-warning-lighter text-warning",
+                  tag.variant === "danger" && "bg-danger-lighter text-danger",
+                  tag.variant === "success" && "bg-success-lighter text-success"
                 )}
               >
                 <Alert02Icon size={12} />
@@ -317,6 +507,7 @@ export function CustomerDrawer({
   );
   const [isClosing, setIsClosing] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [selectedMeeting, setSelectedMeeting] = useState<TimelineEntry | null>(null);
   const drawerRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const prevCustomerIdRef = useRef<string | null>(null);
@@ -336,11 +527,12 @@ export function CustomerDrawer({
     }
   }, [customer?.id, isOpen]);
 
-  // Reset closing state when drawer closes
+  // Reset state when drawer closes
   useEffect(() => {
     if (!isOpen) {
       setIsClosing(false);
       setIsScrolled(false);
+      setSelectedMeeting(null);
     }
   }, [isOpen]);
 
@@ -567,88 +759,96 @@ export function CustomerDrawer({
 
       {/* Right Panel - Activity */}
       <div className="flex flex-1 flex-col bg-bg-white overflow-hidden">
-        {/* Scrollable Content */}
-        <div
-          ref={scrollContainerRef}
-          onScroll={handleScroll}
-          className="flex-1 overflow-y-auto scrollbar-hover"
-        >
-          {/* Sticky Compact Stats Header - visible when scrolled */}
+        {selectedMeeting ? (
+          <MeetingDetailsView
+            entry={selectedMeeting}
+            onBack={() => setSelectedMeeting(null)}
+          />
+        ) : (
+          /* Scrollable Content */
           <div
-            className={cn(
-              "sticky top-0 z-10 flex gap-3 border-b border-stroke-soft bg-bg-white px-6 transition-all duration-200",
-              isScrolled ? "opacity-100 py-4" : "opacity-0 h-0 py-0 overflow-hidden"
-            )}
+            ref={scrollContainerRef}
+            onScroll={handleScroll}
+            className="flex-1 overflow-y-auto scrollbar-hover"
           >
-            {mockActivityStats.map((stat, index) => (
-              <CompactStatCard
-                key={index}
-                title={stat.title}
-                value={stat.value}
-                icon={stat.icon}
-              />
-            ))}
-          </div>
-
-          {/* Full Stats Row - hidden when scrolled */}
-          <div
-            className={cn(
-              "flex gap-5 border-b border-stroke-soft p-4 transition-all duration-200",
-              isScrolled ? "opacity-0 h-0 p-0 overflow-hidden" : "opacity-100"
-            )}
-          >
-            {mockActivityStats.map((stat, index) => (
-              <div
-                key={index}
-                className="flex-1 animate-fade-in"
-                style={{ animationDelay: `${index * 75}ms`, animationFillMode: 'both' }}
-              >
-                <ActivityStatCard {...stat} />
-              </div>
-            ))}
-          </div>
-
-          {/* Tab Filters & Timeline */}
-          <div className="flex flex-col gap-3 p-6 pt-3">
-            {/* Tab Filters - Sticky */}
-            <div className="sticky top-0 z-[5] flex gap-2 bg-bg-white pb-4 pt-3">
-              <FilterTab
-                icon={<FathomLogo size={16} />}
-                label="Meeting"
-                isActive={activeTab === "meeting"}
-                onClick={() => setActiveTab("meeting")}
-              />
-              <FilterTab
-                icon={<HubSpotLogo size={16} />}
-                label="Email Threads"
-                isActive={activeTab === "email"}
-                onClick={() => setActiveTab("email")}
-              />
-              <FilterTab
-                icon={<ZendeskLogo size={16} />}
-                label="Support Tickets"
-                isActive={activeTab === "support"}
-                onClick={() => setActiveTab("support")}
-              />
+            {/* Sticky Compact Stats Header - visible when scrolled */}
+            <div
+              className={cn(
+                "sticky top-0 z-10 flex gap-3 border-b border-stroke-soft bg-bg-white px-6 transition-all duration-200",
+                isScrolled ? "opacity-100 py-4" : "opacity-0 h-0 py-0 overflow-hidden"
+              )}
+            >
+              {mockActivityStats.map((stat, index) => (
+                <CompactStatCard
+                  key={index}
+                  title={stat.title}
+                  value={stat.value}
+                  icon={stat.icon}
+                />
+              ))}
             </div>
 
-            {/* Timeline Feed */}
-            <div className="flex flex-col gap-3.5">
-              {mockTimelineEntries.map((entry, index) => (
+            {/* Full Stats Row - hidden when scrolled */}
+            <div
+              className={cn(
+                "flex gap-5 border-b border-stroke-soft p-4 transition-all duration-200",
+                isScrolled ? "opacity-0 h-0 p-0 overflow-hidden" : "opacity-100"
+              )}
+            >
+              {mockActivityStats.map((stat, index) => (
                 <div
-                  key={entry.id}
-                  className="animate-fade-in"
-                  style={{ animationDelay: `${index * 50}ms`, animationFillMode: 'both' }}
+                  key={index}
+                  className="flex-1 animate-fade-in"
+                  style={{ animationDelay: `${index * 75}ms`, animationFillMode: 'both' }}
                 >
-                  <TimelineCard
-                    entry={entry}
-                    isLast={index === mockTimelineEntries.length - 1}
-                  />
+                  <ActivityStatCard {...stat} />
                 </div>
               ))}
             </div>
+
+            {/* Tab Filters & Timeline */}
+            <div className="flex flex-col gap-3 p-6 pt-3">
+              {/* Tab Filters - Sticky */}
+              <div className="sticky top-0 z-[5] flex gap-2 bg-bg-white pb-4 pt-3">
+                <FilterTab
+                  icon={<FathomLogo size={16} />}
+                  label="Meeting"
+                  isActive={activeTab === "meeting"}
+                  onClick={() => setActiveTab("meeting")}
+                />
+                <FilterTab
+                  icon={<HubSpotLogo size={16} />}
+                  label="Email Threads"
+                  isActive={activeTab === "email"}
+                  onClick={() => setActiveTab("email")}
+                />
+                <FilterTab
+                  icon={<ZendeskLogo size={16} />}
+                  label="Support Tickets"
+                  isActive={activeTab === "support"}
+                  onClick={() => setActiveTab("support")}
+                />
+              </div>
+
+              {/* Timeline Feed */}
+              <div className="flex flex-col gap-3.5">
+                {mockTimelineEntries.map((entry, index) => (
+                  <div
+                    key={entry.id}
+                    className="animate-fade-in"
+                    style={{ animationDelay: `${index * 50}ms`, animationFillMode: 'both' }}
+                  >
+                    <TimelineCard
+                      entry={entry}
+                      isLast={index === mockTimelineEntries.length - 1}
+                      onViewDetails={() => setSelectedMeeting(entry)}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
