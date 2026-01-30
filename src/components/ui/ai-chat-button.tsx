@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import { SparklesIcon, Cancel01Icon, SentIcon } from "hugeicons-react";
+import { SparklesIcon, Cancel01Icon, SentIcon, ArrowExpand01Icon, ArrowShrink01Icon } from "hugeicons-react";
 import { Input } from "./input";
 import { IconButton } from "./icon-button";
 
@@ -12,6 +12,7 @@ export interface AIChatButtonProps {
 
 function AIChatButton({ className }: AIChatButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<
     { role: "user" | "assistant"; content: string }[]
@@ -36,13 +37,21 @@ function AIChatButton({ className }: AIChatButtonProps) {
     }, 1000);
   };
 
+  const handleClose = () => {
+    setIsOpen(false);
+    setIsExpanded(false);
+  };
+
   return (
     <>
       {/* Chat Panel */}
       {isOpen && (
         <div
           className={cn(
-            "fixed bottom-24 right-6 z-[60] flex h-[480px] w-[380px] flex-col overflow-hidden rounded-[var(--radius-4)] border border-stroke-soft bg-bg-white shadow-lg animate-in slide-in-from-bottom-4 fade-in-0",
+            "fixed z-[60] flex flex-col overflow-hidden border-stroke-soft bg-bg-white shadow-lg transition-all duration-300",
+            isExpanded
+              ? "top-[53px] right-0 bottom-0 w-[420px] border-l rounded-none"
+              : "bottom-24 right-6 h-[480px] w-[380px] rounded-[var(--radius-4)] border animate-in slide-in-from-bottom-4 fade-in-0",
             className
           )}
         >
@@ -59,18 +68,28 @@ function AIChatButton({ className }: AIChatButtonProps) {
                 </p>
               </div>
             </div>
-            <IconButton
-              icon={<Cancel01Icon size={18} />}
-              label="Close chat"
-              variant="neutral"
-              styleType="ghost"
-              size="sm"
-              onClick={() => setIsOpen(false)}
-            />
+            <div className="flex items-center gap-1">
+              <IconButton
+                icon={isExpanded ? <ArrowShrink01Icon size={18} /> : <ArrowExpand01Icon size={18} />}
+                label={isExpanded ? "Collapse" : "Expand"}
+                variant="neutral"
+                styleType="ghost"
+                size="sm"
+                onClick={() => setIsExpanded(!isExpanded)}
+              />
+              <IconButton
+                icon={<Cancel01Icon size={18} />}
+                label="Close chat"
+                variant="neutral"
+                styleType="ghost"
+                size="sm"
+                onClick={handleClose}
+              />
+            </div>
           </div>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-4">
+          <div className="flex-1 overflow-y-auto p-4 scrollbar-hover">
             {messages.length === 0 ? (
               <div className="flex h-full flex-col items-center justify-center text-center">
                 <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary-lighter">
@@ -153,34 +172,36 @@ function AIChatButton({ className }: AIChatButtonProps) {
         </div>
       )}
 
-      {/* Floating Button - Fancy Primary */}
-      <div className="fixed bottom-6 right-6 z-[60]">
-        {/* Ripple effect - only show when closed */}
-        {!isOpen && (
-          <>
-            <span className="absolute inset-0 rounded-[var(--radius-2-5)] animate-[ripple_2s_ease-out_infinite] bg-primary/20" />
-            <span className="absolute inset-0 rounded-[var(--radius-2-5)] animate-[ripple_2s_ease-out_infinite_0.6s] bg-primary/20" />
-          </>
-        )}
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className={cn(
-            "relative inline-flex items-center justify-center gap-1 rounded-[var(--radius-2-5)] px-2.5 py-2.5 text-label-sm text-white transition-all active:scale-95",
-            "border border-white/12",
-            "focus-ring",
-            !isOpen && "bg-primary",
-            isOpen && "bg-text-strong hover:bg-text-sub"
+      {/* Floating Button - Fancy Primary (hidden when expanded) */}
+      {!isExpanded && (
+        <div className="fixed bottom-6 right-6 z-[60]">
+          {/* Ripple effect - only show when closed */}
+          {!isOpen && (
+            <>
+              <span className="absolute inset-0 rounded-[var(--radius-2-5)] animate-[ripple_2s_ease-out_infinite] bg-primary/20" />
+              <span className="absolute inset-0 rounded-[var(--radius-2-5)] animate-[ripple_2s_ease-out_infinite_0.6s] bg-primary/20" />
+            </>
           )}
-          style={!isOpen ? { backgroundImage: "linear-gradient(rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 100%), linear-gradient(90deg, var(--color-primary-base) 0%, var(--color-primary-base) 100%)" } : undefined}
-        >
-          {isOpen ? (
-            <Cancel01Icon size={20} />
-          ) : (
-            <SparklesIcon size={20} className="fill-white" />
-          )}
-          <span className="px-1">{isOpen ? "Close" : "Ask Anything"}</span>
-        </button>
-      </div>
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className={cn(
+              "relative inline-flex items-center justify-center gap-1 rounded-[var(--radius-2-5)] px-2.5 py-2.5 text-label-sm text-white transition-all active:scale-95",
+              "border border-white/12",
+              "focus-ring",
+              !isOpen && "bg-primary",
+              isOpen && "bg-text-strong hover:bg-text-sub"
+            )}
+            style={!isOpen ? { backgroundImage: "linear-gradient(rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 100%), linear-gradient(90deg, var(--color-primary-base) 0%, var(--color-primary-base) 100%)" } : undefined}
+          >
+            {isOpen ? (
+              <Cancel01Icon size={20} />
+            ) : (
+              <SparklesIcon size={20} className="fill-white" />
+            )}
+            <span className="px-1">{isOpen ? "Close" : "Ask Anything"}</span>
+          </button>
+        </div>
+      )}
     </>
   );
 }
