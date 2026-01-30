@@ -413,7 +413,7 @@ function TimelineCard({ entry, isLast = false, onViewDetails }: { entry: Timelin
       <div className="flex w-[148px] shrink-0 flex-col items-start">
         <div className="flex gap-3">
           {/* Timeline dot */}
-          <div className="relative z-10 flex size-7 items-center justify-center rounded-full border border-stroke-soft bg-bg-white shadow-xs">
+          <div className="relative z-[1] flex size-7 items-center justify-center rounded-full border border-stroke-soft bg-bg-white shadow-xs">
             <Calendar01Icon size={16} className="text-text-strong" />
           </div>
 
