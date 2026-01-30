@@ -561,7 +561,7 @@ export function CustomerDrawer({
     return () => document.removeEventListener("keydown", handleEscape);
   }, [isOpen, isClosing]);
 
-  // Handle click outside - but NOT on the global header or table
+  // Handle click outside - but NOT on the global header, table, or AI chat button
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
@@ -576,6 +576,16 @@ export function CustomerDrawer({
       const table = document.querySelector("table");
       if (table?.contains(target)) {
         return;
+      }
+
+      // Don't close if clicking on AI chat button or panel (check for z-[60] parent)
+      let element: HTMLElement | null = target;
+      while (element) {
+        const zIndex = window.getComputedStyle(element).zIndex;
+        if (zIndex === "60") {
+          return;
+        }
+        element = element.parentElement;
       }
 
       if (
