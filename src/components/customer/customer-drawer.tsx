@@ -267,16 +267,14 @@ function MeetingDetailsView({
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
       {/* Header with breadcrumb */}
-      <div className="flex items-center justify-between border-b border-stroke-soft px-6 py-4">
-        <div className="flex items-center gap-3">
-          <button
-            onClick={onBack}
-            className="flex items-center gap-1.5 rounded-[var(--radius-2)] px-2 py-1 text-label-sm text-text-sub hover:bg-bg-weak transition-all duration-150"
-          >
-            <ArrowLeft01Icon size={16} />
-            <span>Meetings</span>
-          </button>
-        </div>
+      <div className="flex items-center justify-between border-b border-stroke-soft px-4 py-2.5">
+        <button
+          onClick={onBack}
+          className="flex items-center gap-1.5 rounded-[var(--radius-2)] p-1.5 text-label-sm text-text-sub hover:bg-bg-weak transition-all duration-150"
+        >
+          <ArrowLeft01Icon size={20} />
+          <span>Meetings</span>
+        </button>
         {entry.recordingUrl && (
           <Button
             variant="primary"
