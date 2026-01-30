@@ -771,21 +771,45 @@ export function CustomerDrawer({
             onScroll={handleScroll}
             className="flex-1 overflow-y-auto scrollbar-hover"
           >
-            {/* Sticky Compact Stats Header - visible when scrolled */}
+            {/* Sticky Header with Compact Stats + Tabs - visible when scrolled */}
             <div
               className={cn(
-                "sticky top-0 z-10 flex gap-3 border-b border-stroke-soft bg-bg-white px-6 transition-all duration-200",
+                "sticky top-0 z-10 flex flex-col gap-3 border-b border-stroke-soft bg-bg-white px-6 transition-all duration-200",
                 isScrolled ? "opacity-100 py-4" : "opacity-0 h-0 py-0 overflow-hidden"
               )}
             >
-              {mockActivityStats.map((stat, index) => (
-                <CompactStatCard
-                  key={index}
-                  title={stat.title}
-                  value={stat.value}
-                  icon={stat.icon}
+              {/* Compact Stats */}
+              <div className="flex gap-3">
+                {mockActivityStats.map((stat, index) => (
+                  <CompactStatCard
+                    key={index}
+                    title={stat.title}
+                    value={stat.value}
+                    icon={stat.icon}
+                  />
+                ))}
+              </div>
+              {/* Tabs */}
+              <div className="flex gap-2">
+                <FilterTab
+                  icon={<FathomLogo size={16} />}
+                  label="Meeting"
+                  isActive={activeTab === "meeting"}
+                  onClick={() => setActiveTab("meeting")}
                 />
-              ))}
+                <FilterTab
+                  icon={<HubSpotLogo size={16} />}
+                  label="Email Threads"
+                  isActive={activeTab === "email"}
+                  onClick={() => setActiveTab("email")}
+                />
+                <FilterTab
+                  icon={<ZendeskLogo size={16} />}
+                  label="Support Tickets"
+                  isActive={activeTab === "support"}
+                  onClick={() => setActiveTab("support")}
+                />
+              </div>
             </div>
 
             {/* Full Stats Row - hidden when scrolled */}
@@ -808,8 +832,11 @@ export function CustomerDrawer({
 
             {/* Tab Filters & Timeline */}
             <div className="flex flex-col gap-3 p-6 pt-3">
-              {/* Tab Filters - Sticky */}
-              <div className="sticky top-0 z-[5] flex gap-2 bg-bg-white pb-4 pt-3">
+              {/* Tab Filters - visible when not scrolled */}
+              <div className={cn(
+                "flex gap-2 pb-4 pt-3 transition-all duration-200",
+                isScrolled ? "opacity-0 h-0 py-0 overflow-hidden" : "opacity-100"
+              )}>
                 <FilterTab
                   icon={<FathomLogo size={16} />}
                   label="Meeting"
