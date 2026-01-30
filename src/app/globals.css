@@ -1,26 +1,731 @@
 @import "tailwindcss";
 
+/* ========================================
+   DESIGN TOKENS - HEVO SIGNALS
+   Extracted from Figma Design System
+   ======================================== */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* ----------------------------------------
+     COLORS - Primary
+     ---------------------------------------- */
+  --color-primary-base: #335cff;
+  --color-primary-hover: #2a4fd9;
+  --color-primary-active: #2344b3;
+  --color-primary-lighter: #ebf1ff;
+
+  /* ----------------------------------------
+     COLORS - Text
+     ---------------------------------------- */
+  --color-text-strong: #171717;
+  --color-text-sub: #5c5c5c;
+  --color-text-soft: #a3a3a3;
+  --color-text-disabled: #d1d1d1;
+  --color-text-white: #ffffff;
+
+  /* ----------------------------------------
+     COLORS - Background
+     ---------------------------------------- */
+  --color-bg-white: #ffffff;
+  --color-bg-weak: #f7f7f7;
+  --color-bg-surface: #fafafa;
+
+  /* ----------------------------------------
+     COLORS - Stroke / Border
+     ---------------------------------------- */
+  --color-stroke-soft: #ebebeb;
+  --color-stroke-strong: #171717;
+
+  /* ----------------------------------------
+     COLORS - Icon
+     ---------------------------------------- */
+  --color-icon-strong: #171717;
+  --color-icon-sub: #5c5c5c;
+  --color-icon-soft: #a3a3a3;
+  --color-icon-disabled: #d1d1d1;
+  --color-icon-white: #ffffff;
+
+  /* ----------------------------------------
+     COLORS - State / Semantic
+     ---------------------------------------- */
+  /* Success */
+  --color-success-base: #1fc16b;
+  --color-success-lighter: #e3f7ec;
+  --color-success-light: #b8eacc;
+  --color-success-dark: #19a05a;
+
+  /* Warning */
+  --color-warning-base: #fa7319;
+  --color-warning-lighter: #fff3eb;
+  --color-warning-light: #ffd9c0;
+  --color-warning-dark: #d46214;
+
+  /* Danger / Error */
+  --color-danger-base: #ef4444;
+  --color-danger-lighter: #fee2e2;
+  --color-danger-light: #fca5a5;
+  --color-danger-dark: #dc2626;
+
+  /* Information */
+  --color-info-base: #335cff;
+  --color-info-lighter: #ebf1ff;
+  --color-info-light: #c7d7ff;
+  --color-info-dark: #2a4fd9;
+
+  /* ----------------------------------------
+     COLORS - Neutral Gray Scale
+     ---------------------------------------- */
+  --color-neutral-50: #fafafa;
+  --color-neutral-100: #f5f5f5;
+  --color-neutral-200: #e5e5e5;
+  --color-neutral-300: #d4d4d4;
+  --color-neutral-400: #a3a3a3;
+  --color-neutral-500: #737373;
+  --color-neutral-600: #525252;
+  --color-neutral-700: #404040;
+  --color-neutral-800: #262626;
+  --color-neutral-900: #171717;
+  --color-neutral-950: #0a0a0a;
+
+  /* ----------------------------------------
+     COLORS - Alpha / Overlay
+     ---------------------------------------- */
+  --color-alpha-black-4: rgba(23, 23, 23, 0.04);
+  --color-alpha-black-8: rgba(23, 23, 23, 0.08);
+  --color-alpha-black-16: rgba(23, 23, 23, 0.16);
+  --color-alpha-slate-16: rgba(153, 160, 174, 0.16);
+
+  /* ----------------------------------------
+     COLORS - Sidebar (Dark Theme)
+     ---------------------------------------- */
+  --color-sidebar-bg: #0e121b;
+  --color-sidebar-surface: #161b26;
+  --color-sidebar-hover: #1f2633;
+  --color-sidebar-active: #335cff;
+  --color-sidebar-border: #1f2633;
+  --color-sidebar-text: #ffffff;
+  --color-sidebar-text-muted: #94a3b8;
+
+  /* ----------------------------------------
+     COLORS - Social / Integrations
+     ---------------------------------------- */
+  --color-social-hubspot: #ff7a59;
+  --color-social-zendesk: #16140d;
+  --color-social-salesforce: #00a1e0;
+  --color-social-slack: #4a154b;
+
+  /* ----------------------------------------
+     TYPOGRAPHY - Font Family
+     ---------------------------------------- */
+  --font-family-sans: var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-family-display: var(--font-inter-display), var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* ----------------------------------------
+     TYPOGRAPHY - Font Sizes
+     ---------------------------------------- */
+  --font-size-xs: 0.75rem;      /* 12px */
+  --font-size-sm: 0.875rem;     /* 14px */
+  --font-size-base: 1rem;       /* 16px */
+  --font-size-lg: 1.125rem;     /* 18px */
+  --font-size-xl: 1.25rem;      /* 20px */
+  --font-size-2xl: 1.5rem;      /* 24px */
+  --font-size-3xl: 1.875rem;    /* 30px */
+  --font-size-4xl: 2.25rem;     /* 36px */
+  --font-size-compact: 0.8125rem; /* 13px */
+
+  /* ----------------------------------------
+     TYPOGRAPHY - Line Heights
+     ---------------------------------------- */
+  --line-height-xs: 1rem;       /* 16px */
+  --line-height-sm: 1.125rem;   /* 18px */
+  --line-height-base: 1.25rem;  /* 20px */
+  --line-height-lg: 1.5rem;     /* 24px */
+  --line-height-xl: 2rem;       /* 32px */
+
+  /* ----------------------------------------
+     TYPOGRAPHY - Font Weights
+     ---------------------------------------- */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* ----------------------------------------
+     TYPOGRAPHY - Letter Spacing
+     ---------------------------------------- */
+  --letter-spacing-tight: -0.6px;
+  --letter-spacing-tighter: -1.1px;
+  --letter-spacing-tightest: -1.5px;
+  --letter-spacing-wide: 4px;
+
+  /* ----------------------------------------
+     SPACING
+     ---------------------------------------- */
+  --spacing-0: 0;
+  --spacing-0-5: 0.125rem;  /* 2px */
+  --spacing-1: 0.25rem;     /* 4px */
+  --spacing-2: 0.5rem;      /* 8px */
+  --spacing-3: 0.75rem;     /* 12px */
+  --spacing-3-5: 0.875rem;  /* 14px */
+  --spacing-4: 1rem;        /* 16px */
+  --spacing-5: 1.25rem;     /* 20px */
+  --spacing-6: 1.5rem;      /* 24px */
+  --spacing-8: 2rem;        /* 32px */
+  --spacing-10: 2.5rem;     /* 40px */
+  --spacing-12: 3rem;       /* 48px */
+  --spacing-16: 4rem;       /* 64px */
+
+  /* ----------------------------------------
+     BORDER RADIUS
+     ---------------------------------------- */
+  --radius-0: 0;
+  --radius-1: 0.25rem;      /* 4px */
+  --radius-1-5: 0.375rem;   /* 6px */
+  --radius-2: 0.5rem;       /* 8px */
+  --radius-2-5: 0.625rem;   /* 10px */
+  --radius-3: 0.75rem;      /* 12px */
+  --radius-4: 1rem;         /* 16px */
+  --radius-full: 9999px;
+
+  /* ----------------------------------------
+     SHADOWS
+     ---------------------------------------- */
+  /* X-Small - Subtle elevation */
+  --shadow-xs: 0 1px 2px 0 rgba(10, 13, 20, 0.03);
+
+  /* Small - Cards, dropdowns */
+  --shadow-sm:
+    0 1px 2px 0 rgba(10, 13, 20, 0.04),
+    0 1px 1px 0 rgba(10, 13, 20, 0.02);
+
+  /* Medium - Modals, popovers */
+  --shadow-md:
+    0 4px 6px -1px rgba(10, 13, 20, 0.08),
+    0 2px 4px -2px rgba(10, 13, 20, 0.04);
+
+  /* Large - Floating elements */
+  --shadow-lg:
+    0 96px 96px -32px rgba(51, 51, 51, 0.06),
+    0 48px 48px -24px rgba(51, 51, 51, 0.04),
+    0 24px 24px -12px rgba(51, 51, 51, 0.04),
+    0 12px 12px -6px rgba(51, 51, 51, 0.04),
+    0 6px 6px -3px rgba(51, 51, 51, 0.04),
+    0 3px 3px -1.5px rgba(51, 51, 51, 0.02),
+    0 1px 1px 0.5px rgba(51, 51, 51, 0.04),
+    0 0 0 1px rgba(51, 51, 51, 0.04),
+    inset 0 -1px 1px -0.5px rgba(51, 51, 51, 0.06);
+
+  /* Button - Depth effect for buttons */
+  --shadow-button:
+    inset 0 -1px 1px -0.5px rgba(23, 23, 23, 0.04),
+    0 0 0 1px rgba(23, 23, 23, 0.08),
+    0 1px 1px -0.5px rgba(23, 23, 23, 0.04),
+    0 3px 3px -1.5px rgba(23, 23, 23, 0.04),
+    0 6px 6px -3px rgba(23, 23, 23, 0.04);
+
+  /* Focus ring */
+  --shadow-focus:
+    0 0 0 2px var(--color-bg-white),
+    0 0 0 4px rgba(153, 160, 174, 0.16);
+
+  /* ----------------------------------------
+     TRANSITIONS
+     ---------------------------------------- */
+  --transition-fast: 150ms ease;
+  --transition-base: 200ms ease;
+  --transition-slow: 300ms ease;
+
+  /* ----------------------------------------
+     LAYOUT
+     ---------------------------------------- */
+  --sidebar-width: 240px;
+  --sidebar-collapsed-width: 72px;
+  --header-height: 56px;
+  --content-max-width: 1280px;
 }
+
+/* ========================================
+   TAILWIND THEME EXTENSION
+   ======================================== */
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Colors - Primary */
+  --color-primary: var(--color-primary-base);
+  --color-primary-hover: var(--color-primary-hover);
+  --color-primary-active: var(--color-primary-active);
+  --color-primary-lighter: var(--color-primary-lighter);
+
+  /* Colors - Text */
+  --color-text-strong: var(--color-text-strong);
+  --color-text-sub: var(--color-text-sub);
+  --color-text-soft: var(--color-text-soft);
+  --color-text-disabled: var(--color-text-disabled);
+
+  /* Colors - Background */
+  --color-bg-white: var(--color-bg-white);
+  --color-bg-weak: var(--color-bg-weak);
+  --color-bg-surface: var(--color-bg-surface);
+
+  /* Colors - Stroke */
+  --color-stroke-soft: var(--color-stroke-soft);
+  --color-stroke-strong: var(--color-stroke-strong);
+
+  /* Colors - Icon */
+  --color-icon-strong: var(--color-icon-strong);
+  --color-icon-sub: var(--color-icon-sub);
+  --color-icon-soft: var(--color-icon-soft);
+  --color-icon-disabled: var(--color-icon-disabled);
+
+  /* Colors - Semantic */
+  --color-success: var(--color-success-base);
+  --color-success-lighter: var(--color-success-lighter);
+  --color-success-light: var(--color-success-light);
+  --color-warning: var(--color-warning-base);
+  --color-warning-lighter: var(--color-warning-lighter);
+  --color-warning-light: var(--color-warning-light);
+  --color-danger: var(--color-danger-base);
+  --color-danger-lighter: var(--color-danger-lighter);
+  --color-danger-light: var(--color-danger-light);
+  --color-info: var(--color-info-base);
+  --color-info-lighter: var(--color-info-lighter);
+  --color-info-light: var(--color-info-light);
+
+  /* Colors - Neutral */
+  --color-neutral-50: var(--color-neutral-50);
+  --color-neutral-100: var(--color-neutral-100);
+  --color-neutral-200: var(--color-neutral-200);
+  --color-neutral-300: var(--color-neutral-300);
+  --color-neutral-400: var(--color-neutral-400);
+  --color-neutral-500: var(--color-neutral-500);
+  --color-neutral-600: var(--color-neutral-600);
+  --color-neutral-700: var(--color-neutral-700);
+  --color-neutral-800: var(--color-neutral-800);
+  --color-neutral-900: var(--color-neutral-900);
+  --color-neutral-950: var(--color-neutral-950);
+
+  /* Colors - Sidebar */
+  --color-sidebar-bg: var(--color-sidebar-bg);
+  --color-sidebar-surface: var(--color-sidebar-surface);
+  --color-sidebar-hover: var(--color-sidebar-hover);
+  --color-sidebar-active: var(--color-sidebar-active);
+  --color-sidebar-border: var(--color-sidebar-border);
+  --color-sidebar-text: var(--color-sidebar-text);
+  --color-sidebar-text-muted: var(--color-sidebar-text-muted);
+
+  /* Typography */
+  --font-sans: var(--font-family-sans);
+  --font-display: var(--font-family-display);
+
+  /* Shadows */
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-button: var(--shadow-button);
+  --shadow-focus: var(--shadow-focus);
+
+  /* Border Radius */
+  --radius-none: var(--radius-0);
+  --radius-sm: var(--radius-1);
+  --radius-md: var(--radius-2);
+  --radius-lg: var(--radius-3);
+  --radius-xl: var(--radius-4);
+  --radius-full: var(--radius-full);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ========================================
+   TYPOGRAPHY UTILITIES
+   Semantic typography classes from Figma
+   ======================================== */
+
+/* Titles */
+.text-title-h5 {
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-xl);
+  letter-spacing: 0;
+}
+
+/* Labels */
+.text-label-lg {
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-lg);
+  letter-spacing: var(--letter-spacing-tightest);
+}
+
+.text-label-md {
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-lg);
+  letter-spacing: var(--letter-spacing-tighter);
+}
+
+.text-label-sm {
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-base);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+.text-label-xs {
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-xs);
+  letter-spacing: 0;
+}
+
+.text-label-compact {
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-compact);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-base);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+/* Paragraphs */
+.text-paragraph-sm {
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-base);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+.text-paragraph-xs {
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-xs);
+  letter-spacing: 0;
+}
+
+/* Body */
+.text-body-xs {
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-sm);
+  letter-spacing: 0;
+}
+
+/* Subheadings */
+.text-subheading-xs {
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-xs);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+}
+
+/* ========================================
+   BASE STYLES
+   ======================================== */
+
+* {
+  border-color: var(--color-stroke-soft);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-bg-white);
+  color: var(--color-text-strong);
+  font-family: var(--font-family-sans);
+  font-feature-settings: "rlig" 1, "calt" 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Focus visible styles - exclude form inputs that have custom focus handling */
+:focus-visible:not(input):not(textarea):not(select):not(button) {
+  outline: 2px solid var(--color-primary-base);
+  outline-offset: 2px;
+}
+
+/* Scrollbar styles */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-neutral-300);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-neutral-400);
+}
+
+/* Selection styles */
+::selection {
+  background: var(--color-primary-base);
+  color: white;
+}
+
+/* ========================================
+   COMPONENT STATE UTILITIES
+   ======================================== */
+
+/* Focus ring utility - use .focus-ring class */
+.focus-ring {
+  box-shadow:
+    0 0 0 2px var(--color-bg-white),
+    0 0 0 4px rgba(153, 160, 174, 0.16);
+}
+
+/* Input/Button states */
+.input-focus {
+  background-color: var(--color-bg-white);
+  border-color: var(--color-stroke-strong);
+  box-shadow:
+    0 0 0 2px var(--color-bg-white),
+    0 0 0 4px rgba(153, 160, 174, 0.16);
+}
+
+.input-hover {
+  background-color: var(--color-bg-weak);
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.input-disabled {
+  background-color: var(--color-bg-weak);
+  border-color: transparent;
+  cursor: not-allowed;
+}
+
+/* ========================================
+   ANIMATIONS
+   ======================================== */
+
+/* Subtle ripple effect for attention-grabbing buttons */
+@keyframes ripple {
+  0% {
+    transform: scale(1);
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(1.35);
+    opacity: 0;
+  }
+}
+
+/* Slide in from right - for drawers/panels */
+@keyframes slide-in-from-right {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Slide out to right */
+@keyframes slide-out-to-right {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+/* Fade in */
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Fade out */
+@keyframes fade-out {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Scale in - for modals, popovers */
+@keyframes scale-in {
+  0% {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Slide up - for tooltips, dropdowns */
+@keyframes slide-up {
+  0% {
+    transform: translateY(4px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Slide down */
+@keyframes slide-down {
+  0% {
+    transform: translateY(-4px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Subtle pulse for loading states */
+@keyframes subtle-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Animation utility classes */
+.animate-slide-in-right {
+  animation: slide-in-from-right var(--transition-base) ease-out;
+}
+
+.animate-slide-out-right {
+  animation: slide-out-to-right var(--transition-base) ease-in;
+}
+
+.animate-fade-in {
+  animation: fade-in var(--transition-fast) ease-out;
+}
+
+.animate-fade-out {
+  animation: fade-out var(--transition-fast) ease-in;
+}
+
+.animate-scale-in {
+  animation: scale-in var(--transition-fast) ease-out;
+}
+
+.animate-slide-up {
+  animation: slide-up var(--transition-fast) ease-out;
+}
+
+.animate-slide-down {
+  animation: slide-down var(--transition-fast) ease-out;
+}
+
+.animate-subtle-pulse {
+  animation: subtle-pulse 2s ease-in-out infinite;
+}
+
+/* Transition utilities */
+.transition-micro {
+  transition: all var(--transition-fast);
+}
+
+.transition-base {
+  transition: all var(--transition-base);
+}
+
+.transition-slow {
+  transition: all var(--transition-slow);
+}
+
+/* Hover lift effect */
+.hover-lift {
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.hover-lift:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Press effect */
+.press-effect {
+  transition: transform var(--transition-fast);
+}
+
+.press-effect:active {
+  transform: scale(0.98);
+}
+
+/* ========================================
+   AVATAR COLOR VARIANTS
+   Subtle faded backgrounds for avatars
+   ======================================== */
+
+.avatar-bg-blue {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.avatar-bg-purple {
+  background-color: #ede9fe;
+  color: #5b21b6;
+}
+
+.avatar-bg-pink {
+  background-color: #fce7f3;
+  color: #9d174d;
+}
+
+.avatar-bg-green {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.avatar-bg-yellow {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.avatar-bg-orange {
+  background-color: #ffedd5;
+  color: #c2410c;
+}
+
+.avatar-bg-teal {
+  background-color: #ccfbf1;
+  color: #115e59;
+}
+
+.avatar-bg-indigo {
+  background-color: #e0e7ff;
+  color: #3730a3;
+}
+
+.avatar-bg-rose {
+  background-color: #ffe4e6;
+  color: #9f1239;
+}
+
+.avatar-bg-cyan {
+  background-color: #cffafe;
+  color: #0e7490;
 }
