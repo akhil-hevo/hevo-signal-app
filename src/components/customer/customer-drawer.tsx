@@ -16,6 +16,7 @@ import {
   Alert02Icon,
   ArrowLeft01Icon,
   PlayCircle02Icon,
+  SparklesIcon,
 } from "hugeicons-react";
 
 interface CustomerDrawerProps {
@@ -668,6 +669,31 @@ export function CustomerDrawer({
               Zendesk
             </Button>
           </div>
+        </div>
+
+        {/* AI Insights Summary */}
+        <div className="flex gap-3 border-b border-stroke-soft px-6 py-4">
+          <div className="flex size-6 shrink-0 items-center justify-center rounded-full bg-primary-lighter">
+            <SparklesIcon size={14} className="text-primary" />
+          </div>
+          <p className="text-paragraph-sm text-text-sub leading-relaxed">
+            {customer.healthStatus === "critical" ? (
+              <>
+                <span className="text-danger font-medium">High churn risk.</span>{" "}
+                ARR declining 15% QoQ. Support tickets up 3x in last 30 days. Product usage down 40% since renewal.
+              </>
+            ) : customer.healthStatus === "at-risk" ? (
+              <>
+                <span className="text-warning font-medium">Needs attention.</span>{" "}
+                Engagement declining. Last meeting was 48 days ago. Consider scheduling a check-in before renewal.
+              </>
+            ) : (
+              <>
+                <span className="text-success font-medium">Healthy account.</span>{" "}
+                Strong product adoption with 92% feature utilization. Expansion opportunity identified in analytics module.
+              </>
+            )}
+          </p>
         </div>
 
         {/* Customer Details Grid */}
