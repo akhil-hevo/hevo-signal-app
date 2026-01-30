@@ -778,8 +778,8 @@ export function CustomerDrawer({
             {/* Sticky Header with Compact Stats + Tabs - visible when scrolled */}
             <div
               className={cn(
-                "sticky top-0 z-10 flex flex-col gap-3 border-b border-stroke-soft bg-bg-white px-6 transition-all duration-200",
-                isScrolled ? "opacity-100 py-4" : "opacity-0 h-0 py-0 overflow-hidden"
+                "sticky top-0 z-10 flex flex-col gap-3 border-b border-stroke-soft bg-bg-white px-6",
+                isScrolled ? "py-4" : "hidden"
               )}
             >
               {/* Compact Stats */}
@@ -819,8 +819,8 @@ export function CustomerDrawer({
             {/* Full Stats Row - hidden when scrolled */}
             <div
               className={cn(
-                "flex gap-5 border-b border-stroke-soft p-4 transition-all duration-200",
-                isScrolled ? "opacity-0 h-0 p-0 overflow-hidden" : "opacity-100"
+                "flex gap-5 border-b border-stroke-soft p-4",
+                isScrolled && "hidden"
               )}
             >
               {mockActivityStats.map((stat, index) => (
@@ -838,8 +838,8 @@ export function CustomerDrawer({
             <div className="flex flex-col gap-3 p-6 pt-3">
               {/* Tab Filters - visible when not scrolled */}
               <div className={cn(
-                "flex gap-2 pb-4 pt-3 transition-all duration-200",
-                isScrolled ? "opacity-0 h-0 py-0 overflow-hidden" : "opacity-100"
+                "flex gap-2 pb-4 pt-3",
+                isScrolled && "hidden"
               )}>
                 <FilterTab
                   icon={<FathomLogo size={16} />}

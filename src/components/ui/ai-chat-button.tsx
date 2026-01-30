@@ -42,7 +42,7 @@ function AIChatButton({ className }: AIChatButtonProps) {
       {isOpen && (
         <div
           className={cn(
-            "fixed bottom-24 right-6 z-50 flex h-[480px] w-[380px] flex-col overflow-hidden rounded-[var(--radius-4)] border border-stroke-soft bg-bg-white shadow-lg animate-in slide-in-from-bottom-4 fade-in-0",
+            "fixed bottom-24 right-6 z-[60] flex h-[480px] w-[380px] flex-col overflow-hidden rounded-[var(--radius-4)] border border-stroke-soft bg-bg-white shadow-lg animate-in slide-in-from-bottom-4 fade-in-0",
             className
           )}
         >
@@ -154,7 +154,7 @@ function AIChatButton({ className }: AIChatButtonProps) {
       )}
 
       {/* Floating Button - Fancy Primary */}
-      <div className="fixed bottom-6 right-6 z-50">
+      <div className="fixed bottom-6 right-6 z-[60]">
         {/* Ripple effect - only show when closed */}
         {!isOpen && (
           <>
