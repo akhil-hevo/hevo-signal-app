@@ -562,7 +562,7 @@ export function CustomerDrawer({
     return () => document.removeEventListener("keydown", handleEscape);
   }, [isOpen, isClosing]);
 
-  // Handle click outside - but NOT on the global header
+  // Handle click outside - but NOT on the global header or table
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
@@ -570,6 +570,12 @@ export function CustomerDrawer({
       // Don't close if clicking on the header or its children
       const header = document.querySelector("header");
       if (header?.contains(target)) {
+        return;
+      }
+
+      // Don't close if clicking on the table (to allow switching customers)
+      const table = document.querySelector("table");
+      if (table?.contains(target)) {
         return;
       }
 
