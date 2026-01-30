@@ -267,7 +267,7 @@ function MeetingDetailsView({
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
       {/* Header with breadcrumb */}
-      <div className="flex items-center justify-between border-b border-stroke-soft px-4 py-2.5">
+      <div className="flex h-11 items-center justify-between border-b border-stroke-soft px-4">
         <button
           onClick={onBack}
           className="flex items-center gap-1.5 rounded-[var(--radius-2)] p-1.5 text-label-sm text-text-sub hover:bg-bg-weak transition-all duration-150"
@@ -620,7 +620,7 @@ export function CustomerDrawer({
       {/* Left Panel - Customer Profile */}
       <div className="flex w-[390px] shrink-0 flex-col border-r border-stroke-soft">
         {/* Compact Header with Close */}
-        <div className="flex items-center gap-2 border-b border-stroke-soft px-4 py-2.5">
+        <div className="flex h-11 items-center gap-2 border-b border-stroke-soft px-4">
           <button
             onClick={handleClose}
             className="rounded-[var(--radius-2)] p-1.5 hover:bg-bg-weak transition-all duration-150 active:scale-95"
